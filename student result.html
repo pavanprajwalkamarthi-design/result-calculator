@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Result Calculator</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f2027;
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 300px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+}
+
+button {
+    padding: 12px 25px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#results {
+    margin-top: 20px;
+    display: none;
+}
+
+.pass { color: #2ecc71; }
+.fail { color: #e74c3c; }
+</style>
+</head>
+
+<body>
+
+<h1>📚 Student Result Calculator</h1>
+
+<!-- Inputs -->
+<div>
+
+<h3>📖 Theory Subjects</h3>
+
+<input type="number" id="theory1" placeholder="Optimization Techniques"><br>
+<input type="number" id="theory2" placeholder="Probability & Statistics"><br>
+<input type="number" id="theory3" placeholder="Machine Learning"><br>
+<input type="number" id="theory4" placeholder="Database Management Systems"><br>
+<input type="number" id="theory5" placeholder="Digital Logic and Computer Organization"><br>
+<input type="number" id="theory6" placeholder="Design Thinking & Innovation"><br>
+
+<h3>🔬 Lab Subjects</h3>
+
+<input type="number" id="lab1" placeholder="Machine Learning - Lab"><br>
+<input type="number" id="lab2" placeholder="Database Management Systems - LAB"><br>
+<input type="number" id="lab3" placeholder="Full Stack Development - I LAB"><br>
+
+</div>
+
+<button onclick="calculateResult()">Calculate Result</button>
+
+<!-- Output -->
+<div id="results">
+    <h2>Total: <span id="totalMarks"></span> / 900</h2>
+    <h2>Percentage: <span id="percentage"></span></h2>
+    <h2 id="resultStatus"></h2>
+
+    <h3>📋 Subject-wise Result</h3>
+    <ul id="subjectList"></ul>
+</div>
+
+<script>
+
+function calculateResult() {
+
+    const subjectNames = [
+        "Optimization Techniques",
+        "Probability & Statistics",
+        "Machine Learning",
+        "Database Management Systems",
+        "Digital Logic and Computer Organization",
+        "Design Thinking & Innovation",
+        "Machine Learning - Lab",
+        "Database Management Systems - LAB",
+        "Full Stack Development - I LAB"
+    ];
+
+    const ids = [
+        "theory1","theory2","theory3","theory4","theory5","theory6",
+        "lab1","lab2","lab3"
+    ];
+
+    let marks = [];
+
+    for (let i = 0; i < ids.length; i++) {
+        let value = document.getElementById(ids[i]).value;
+
+        if (value === "") {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        value = parseFloat(value);
+
+        if (value < 0 || value > 100) {
+            alert("Marks must be between 0 and 100");
+            return;
+        }
+
+        marks.push(value);
+    }
+
+    let total = marks.reduce((a, b) => a + b, 0);
+    let percentage = (total / 900) * 100;
+
+    let fail = false;
+
+    for (let m of marks) {
+        if (m < 40) {
+            fail = true;
+            break;
+        }
+    }
+
+    // Show results
+    document.getElementById("results").style.display = "block";
+    document.getElementById("totalMarks").innerText = total;
+    document.getElementById("percentage").innerText = percentage.toFixed(2) + "%";
+
+    let resultText = fail ? "FAIL ❌" : "PASS ✅";
+    document.getElementById("resultStatus").innerText = resultText;
+    document.getElementById("resultStatus").className = fail ? "fail" : "pass";
+
+    // Subject-wise result
+    let list = document.getElementById("subjectList");
+    list.innerHTML = "";
+
+    for (let i = 0; i < marks.length; i++) {
+        let li = document.createElement("li");
+
+        let status = marks[i] >= 40 ? "PASS" : "FAIL";
+        li.innerText = subjectNames[i] + " → " + marks[i] + " (" + status + ")";
+        li.style.color = marks[i] >= 40 ? "#2ecc71" : "#e74c3c";
+
+        list.appendChild(li);
+    }
+}
+
+</script>
+
+</body>
+</html>
